@@ -10,8 +10,8 @@ fetch("http://localhost:3000/api/products/" + productId)
   .then((response) => response.json())
   .then((data) => useData(data));
 
-function useData(item) {
-  const { colors, name, price, imageUrl, description, altTxt } = item;
+function useData(itemKanap) {
+  const { colors, name, price, imageUrl, description, altTxt } = itemKanap;
   insertColors(colors);
   insertTitle(name);
   insertPrice(price);
@@ -21,7 +21,7 @@ function useData(item) {
 
 function insertColors(colors) {
   const select = document.querySelector("#colors");
-  if (select != null) {
+  {
     colors.forEach((tint) => {
       const option = document.createElement("option");
       option.value = tint;
@@ -33,25 +33,40 @@ function insertColors(colors) {
 
 function insertTitle(name) {
   const h1 = document.querySelector("#title");
-  if (h1 != null) h1.textContent = name;
+  h1.textContent = name;
 }
 
 function insertPrice(price) {
   const kanapPrice = document.querySelector("#price");
-  if (price != null) kanapPrice.textContent = price;
+  kanapPrice.textContent = price;
 }
 
 function insertImage(imageUrl, altTxt) {
   const image = document.createElement("img");
-  image.scr = imageUrl;
+  image.src = imageUrl;
   image.alt = altTxt;
   const bounce = document.querySelector(".item__img");
-  if (bounce != null) bounce.appendChild(image);
-  //   bounce.appendChild(image)
-  //   return image;
+  bounce.appendChild(image);
 }
 
 function insertDescription(description) {
   const kanapDescription = document.querySelector("#description");
-  if (description != null) kanapDescription.textContent = description;
+  kanapDescription.textContent = description;
+}
+
+// gestion d'ajout couleur et nombre de produit
+const button = document.querySelector("#addToCart");
+if (button != null) {
+  button.addEventListener("click", (e) => {
+    const color = document.querySelector("#colors").value;
+    if (color == null || color === "" || quantity == null || quantity == 0) {
+      alert("Merci de choisir la couleur et la quantité souhaité");
+    }
+    const data = {
+      colors: color,
+      quantity: quantity,
+      price: price
+    }
+    localStorage.setItem(JSON.stringify(data))
+  });
 }
