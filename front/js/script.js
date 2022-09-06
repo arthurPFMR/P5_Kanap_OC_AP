@@ -8,10 +8,10 @@ function addProducts(sofaKanap) {
   //création de la boucle______________________________
   sofaKanap.forEach((kanap) => {
     // appel data produit________________________________
-    const { id, imageUrl, altTxt, name, description } = kanap;
+    const { _id, imageUrl, altTxt, name, description } = kanap;
 
     // création des éléments (lien->article->contenu)____
-    const link = insertLink(id);
+    const link = insertLink(_id);
     const article = insertArticle();
     const image = insertImage(imageUrl, altTxt);
     const h3 = insertH3(name);
@@ -25,12 +25,13 @@ function addProducts(sofaKanap) {
     // Ajout de l'article dans le lien___________________
     appendArticleInLink(link, article);
   });
+    //fin de la boucle______________________________
 }
 
 function insertLink(id) {
     const link = document.createElement("a");
     link.href = `./product.html?id=${id}`;
-    return link;
+    return link;    
 }
 
 function insertArticle() {
@@ -66,3 +67,4 @@ function insertParagraph(description) {
   paragraph.classList.add("productDescription");
   return paragraph;
 }
+
