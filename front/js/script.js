@@ -18,9 +18,9 @@ function addProducts(sofaKanap) {
     const paragraph = insertParagraph(description);
 
     // Ajout des éléments à l'article____________________
-    article.appendChild(image);
-    article.appendChild(h3);
-    article.appendChild(paragraph);
+    article.append(image);
+    article.append(h3);
+    article.append(paragraph);
 
     // Ajout de l'article dans le lien___________________
     appendArticleInLink(link, article);
