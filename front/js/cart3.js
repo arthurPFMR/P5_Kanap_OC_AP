@@ -14,8 +14,8 @@ function productInLocalStorage() {
   // définir le nombre de donnée ds LS
  const numberOfProduct = localStorage.length;
   // boucle pour définir la position des données ds LS
-  for (let i = 0; i < numberOfProduct; i++) {
-    const product = localStorage.getItem(localStorage.key(i));
+  for (let addToCart = 0; addToCart < numberOfProduct; addToCart++) {
+    const product = localStorage.getItem(localStorage.key(addToCart));
     // convertir en objet (parse)
     const dataObject = JSON.parse(product);
     // push objet du LS

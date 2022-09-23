@@ -1,32 +1,17 @@
-// // declaration variable key + value
-// let productToLocalStorage = JSON.parse(localStorage.getItem("#addToCart"));
+// declaration variable key + value
+let productToLocalStorage = JSON.parse(localStorage.getItem("#addToCart"));
 
-// // affichage produit
-// const cartProduct = document.querySelector("#cart__items");
-// // si panier vide
-// if (productToLocalStorage === null) {
-//   const emptyBasket = [];
-//   alert("le panier est vide");
-//   // le panier n'est pas vide
-// } else {
-//   let displayProduct = [];
-//   for (let i = 0; i < productToLocalStorage.lenght; i++) {
-//     displayProduct.push(productToLocalStorage);
-//   }
-// }
-
-// cart est un Array
-const cart = [];
-// pour chaque produit dans le LS afficher la carte produit
-productFromLocalStorage();
-cart.forEach((product) => displayCartProduct(product));
-// retrouver le produit dans le LS
-function productFromLocalStorage() {
-  const numberOfProduct = localStorage.length;
-  for (let i = 0; i < numberOfProduct; i++) {
-    const product = localStorage.getItem(localStorage.key(product));
-    const productObject = JSON.parse(product);
-    cart.push(productObject);
+// affichage produit
+const cartProduct = document.querySelector("#cart__items");
+// si panier vide
+if (productToLocalStorage === null) {
+  const emptyBasket = [];
+  alert("le panier est vide");
+  // le panier n'est pas vide
+} else {
+  let displayProduct = [];
+  for (let i = 0; i < productToLocalStorage.lenght; i++) {
+    displayProduct.push(productToLocalStorage);
   }
 }
 
