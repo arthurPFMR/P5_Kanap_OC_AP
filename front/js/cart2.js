@@ -29,10 +29,11 @@ function displayArticle(article) {
 function insertArticle(product) {
   let article = document.createElement("article");
   article.classList.add("cart__item");
-  article.dataset.id = product.id;
-  article.dataset.color = product.color;
+  // article.dataset.id = product.id;
+  // article.dataset.color = product.color;
   return article;
 }
+console.log("voire article", insertArticle)
 // inserer l'image
 function insertImage(product) {
   const image = document.createElement("image");

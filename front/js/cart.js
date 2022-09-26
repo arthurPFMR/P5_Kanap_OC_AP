@@ -1,25 +1,26 @@
-fetch("http://localhost:3000/api/products")
-  .then((response) => response.json())
-  .then((product) => productInLocalStorage(product));
+// fetch("http://localhost:3000/api/products")
+//   .then((response) => response.json())
+//   .then((product) => productInLocalStorage(product));
 
 const productCart = [];
 
 productInLocalStorage();
 // boucle pour afficher tout les objets du LS
-productCart.forEach((product) => {
-  return displayProduct(product);
-});
+productCart.forEach((product) => displayProduct(product));
+// productCart.forEach((product) => {
+//   return displayProduct(product);
+// });
 
 function productInLocalStorage() {
   // définir le nombre de donnée ds LS
- const numberOfProduct = localStorage.length;
+  const numberOfProduct = localStorage.length;
   // boucle pour définir la position des données ds LS
   for (let i = 0; i < numberOfProduct; i++) {
     const product = localStorage.getItem(localStorage.key(i));
     // convertir en objet (parse)
-    const dataObject = JSON.parse(product);
-    // push objet du LS
-    productCart.push(dataObject);
+    const dataToObject = JSON.parse(product);
+    // push objet dans array productCart
+    productCart.push(dataToObject);
   }
 }
 
@@ -27,7 +28,6 @@ function productInLocalStorage() {
 function displayProduct(product) {
   const article = insertArticle(product);
   displayArticle(article);
-  console.log(article)
   const imageBloc = insertImage(product);
   article.append(imageBloc);
 }
