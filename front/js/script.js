@@ -67,4 +67,3 @@ function insertParagraph(description) {
   paragraph.classList.add("productDescription");
   return paragraph;
 }
-

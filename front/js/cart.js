@@ -1,6 +1,6 @@
-// fetch("http://localhost:3000/api/products")
-//   .then((response) => response.json())
-//   .then((product) => productInLocalStorage(product));
+fetch("http://localhost:3000/api/products")
+  .then((response) => response.json())
+  .then((product) => productInLocalStorage(product));
 
 const productCart = [];
 
@@ -23,6 +23,7 @@ function productInLocalStorage() {
     productCart.push(dataToObject);
   }
 }
+// console.log(product)
 
 // affichage produit
 function displayProduct(product) {
@@ -38,13 +39,25 @@ function displayArticle(article) {
 }
 
 function insertArticle(product) {
-  const article = document.createElement("article");
-  article.classList.add("cart__item");
-  article.dataset.id = product.id;
-  article.dataset.color = product.color;
-  return article;
+  for (const k of product) {
+    const article = document.createElement("article");
+    article.classList.add("cart__item");
+    article.dataset.id = k.id;
+    article.dataset.color = k.colors;
+    return article;
+  }
 }
 
+const dataAPI = fetch("http://localhost:3000/api/products");
+
+dataAPI.then(async (response) => {
+  const dataProduct = await response.json();
+  console.log(dataProduct)
+  for (const l of dataProduct) {
+    imageUrl = l.imageUrl
+  }
+console.log(imageUrl )
+});
 function insertImage(product) {
   const imageBloc = document.createElement("div");
   imageBloc.classList.add("cart__item__img");
@@ -54,3 +67,4 @@ function insertImage(product) {
   imageBloc.append(image);
   return imageBloc;
 }
+
