@@ -15,25 +15,25 @@ const getDataFromLocalStorage = () => {
   }
 
   for (let i = 0; i < arrayCart.length; i++) {
-    const ProductInCart = arrayCart[i];
-    cartElement(ProductInCart);
+    const productInCart = arrayCart[i];
+    cartElement(productInCart);
   }
 };
 
-//fonction génération de l'article :___________________________________________
+//fonction   génération de l'article :___________________________________________
 const cartElement = (data) => {
   infoProduct = data;
 
   // article :
-  let cartproduct = document.createElement("article");
-  document.querySelector("#cart__items").append(cartproduct);
-  cartproduct.dataset.id = infoProduct.id;
-  cartproduct.dataset.color = infoProduct.color;
-  cartproduct.classList.add("cart__item");
+  let cartProduct = document.createElement("article");
+  document.querySelector("#cart__items").append(cartProduct);
+  cartProduct.dataset.id = infoProduct.id;
+  cartProduct.dataset.color = infoProduct.colors;
+  cartProduct.classList.add("cart__item");
 
   // div image :________________________________________________________
   let divImage = document.createElement("div");
-  cartproduct.append(divImage);
+  cartProduct.append(divImage);
   divImage.classList.add("cart__item__img");
 
   // image :____________________________________________________________
@@ -44,7 +44,7 @@ const cartElement = (data) => {
 
   //   div content________________________________________________________
   let content = document.createElement("div");
-  cartproduct.append(content);
+  cartProduct.append(content);
   content.classList.add("cart__item__content");
 
   // div content desciption_______________________________________________
