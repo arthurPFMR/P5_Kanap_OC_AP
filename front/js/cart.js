@@ -1,70 +1,55 @@
-fetch("http://localhost:3000/api/products")
+fetch("http://localhost:3000/api/products/")
   .then((response) => response.json())
-  .then((product) => productInLocalStorage(product));
+  .then((data) => getDataFromLocalStorage(data));
 
-const productCart = [];
+// récup du panier en array LS_________________________________________
+let infoProduct = null;
+let arrayCart = [];
 
-productInLocalStorage();
-// boucle pour afficher tout les objets du LS
-productCart.forEach((product) => displayProduct(product));
-// productCart.forEach((product) => {
-//   return displayProduct(product);
-// });
-
-function productInLocalStorage() {
-  // définir le nombre de donnée ds LS
-  const numberOfProduct = localStorage.length;
-  // boucle pour définir la position des données ds LS
-  for (let i = 0; i < numberOfProduct; i++) {
-    const product = localStorage.getItem(localStorage.key(i));
-    // convertir en objet (parse)
-    const dataToObject = JSON.parse(product);
-    // push objet dans array productCart
-    productCart.push(dataToObject);
+const getDataFromLocalStorage = () => {
+  //vérifie et récupère les données du panier__________________________
+  if (localStorage.getItem("kanap") == null) {
+    alert("panier vide");
+  } else if (localStorage.getItem("kanap")) {
+    arrayCart = JSON.parse(localStorage.getItem("kanap"));
   }
-}
-// console.log(product)
 
-// affichage produit
-function displayProduct(product) {
-  const article = insertArticle(product);
-  displayArticle(article);
-  const imageBloc = insertImage(product);
-  article.append(imageBloc);
-}
-
-// affichage article
-function displayArticle(article) {
-  document.querySelector("#cart__items").append(article);
-}
-
-function insertArticle(product) {
-  for (const k of product) {
-    const article = document.createElement("article");
-    article.classList.add("cart__item");
-    article.dataset.id = k.id;
-    article.dataset.color = k.colors;
-    return article;
+  for (let i = 0; i < arrayCart.length; i++) {
+    const ProductInCart = arrayCart[i];
+    cartElement(ProductInCart);
   }
-}
+};
 
-const dataAPI = fetch("http://localhost:3000/api/products");
+//fonction génération de l'article :___________________________________________
+const cartElement = (data) => {
+  infoProduct = data;
 
-dataAPI.then(async (response) => {
-  const dataProduct = await response.json();
-  console.log(dataProduct)
-  for (const l of dataProduct) {
-    imageUrl = l.imageUrl
-  }
-console.log(imageUrl )
-});
-function insertImage(product) {
-  const imageBloc = document.createElement("div");
-  imageBloc.classList.add("cart__item__img");
-  let image = document.createElement("cart__item__img");
-  image.src = product.imageUrl;
-  image.alt = product.altTxt;
-  imageBloc.append(image);
-  return imageBloc;
-}
+  // article :
+  let cartproduct = document.createElement("article");
+  document.querySelector("#cart__items").append(cartproduct);
+  cartproduct.dataset.id = infoProduct.id;
+  cartproduct.dataset.color = infoProduct.color;
+  cartproduct.classList.add("cart__item");
 
+  // div image :________________________________________________________
+  let divImage = document.createElement("div");
+  cartproduct.append(divImage);
+  divImage.classList.add("cart__item__img");
+
+  // image :____________________________________________________________
+  let imageProduct = document.createElement("img");
+  divImage.append(imageProduct);
+  imageProduct.setAttribute("src", infoProduct.imageUrl);
+  imageProduct.setAttribute("alt", infoProduct.altTxt);
+
+  //   div content________________________________________________________
+  let content = document.createElement("div");
+  cartproduct.append(content);
+  content.classList.add("cart__item__content");
+
+  // div content desciption_______________________________________________
+  let description = document.createElement("div");
+  content.append(description);
+  description.classList.add("cart__item__content__description");
+};
+ getDataFromLocalStorage()

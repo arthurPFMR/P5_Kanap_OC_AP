@@ -1,11 +1,9 @@
-// console.log(window.location.search)
-
-// _____récupération des paramètres d’URL__________________
+//récupération des paramètres d’URL___________________________________________
 const idProductUrl = window.location.search;
 const urlParams = new URLSearchParams(idProductUrl);
 const productId = urlParams.get("id");
 
-// _____appel API__________________________________________
+// _____appel API_____________________________________________________________
 fetch("http://localhost:3000/api/products/" + productId)
   .then((response) => response.json())
   .then((data) => useData(data));
@@ -71,11 +69,11 @@ if (button != null) {
     //___________localStorage__________________________
     function addToLocalStorage() {
       productToLocalStorage.push(productOptions);
-      localStorage.setItem("#addToCart", JSON.stringify(productToLocalStorage));
+      localStorage.setItem("kanap", JSON.stringify(productToLocalStorage));
     }
 
     //declaration key & value
-    let productToLocalStorage = JSON.parse(localStorage.getItem("#addToCart"));
+    let productToLocalStorage = JSON.parse(localStorage.getItem("kanap"));
 
     //si produit ds localstorage
     if (productToLocalStorage) {
@@ -85,7 +83,7 @@ if (button != null) {
       if (getProductStorage) {
         getProductStorage.quantity += Number(quantity);
         localStorage.setItem(
-          "#addToCart",
+          "kanap",
           JSON.stringify(productToLocalStorage)
         );
         return;
@@ -96,7 +94,7 @@ if (button != null) {
       productToLocalStorage = [];
       productToLocalStorage.push(productOptions);
     }
-    localStorage.setItem("#addToCart", JSON.stringify(productToLocalStorage));
+    localStorage.setItem("kanap", JSON.stringify(productToLocalStorage));
     // window.location.href = "cart.html";
   });
 }

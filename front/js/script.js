@@ -1,69 +1,56 @@
-// _____appel API___________________________________
-fetch("http://localhost:3000/api/products")
-  .then((response) => response.json())
-  .then((data) => addProducts(data));
+// FONCTION DE RECUPERATION DES ITEMS DE L'API_________________________________
 
-//création des cartes kanap______________________
-function addProducts(sofaKanap) {
-  //création de la boucle______________________________
-  sofaKanap.forEach((kanap) => {
-    // appel data produit________________________________
-    const { _id, imageUrl, altTxt, name, description } = kanap;
+const kanapItems = async function () {
+  try {
+    let response = await fetch("http://localhost:3000/api/products/");
 
-    // création des éléments (lien->article->contenu)____
-    const link = insertLink(_id);
-    const article = insertArticle();
-    const image = insertImage(imageUrl, altTxt);
-    const h3 = insertH3(name);
-    const paragraph = insertParagraph(description);
+    let listItems = await response.json();
 
-    // Ajout des éléments à l'article____________________
-    article.append(image);
-    article.append(h3);
-    article.append(paragraph);
-
-    // Ajout de l'article dans le lien___________________
-    appendArticleInLink(link, article);
-  });
-    //fin de la boucle______________________________
-}
-
-function insertLink(id) {
-    const link = document.createElement("a");
-    link.href = `./product.html?id=${id}`;
-    return link;    
-}
-
-function insertArticle() {
-    const article = document.createElement("article");
-    return article;
-}
-
-function appendArticleInLink(link, article) {
-    const items = document.querySelector("#items");
-    if (items != null) {
-      items.appendChild(link);
-      link.appendChild(article);
+    if (response.ok) {
+      dataToCards(listItems);
     }
-}
+  } catch (e) {
+    console.error(e);
+  }
+};
 
-function insertImage(imageUrl, altTxt) {
-  const image = document.createElement("img");
-  image.src = imageUrl;
-  image.alt = altTxt;
-  return image;
-}
+// FONCTION D'INTEGRATION DES ELEMENTS DE L'API_________________________________
 
-function insertH3(name) {
-  const h3 = document.createElement("h3");
-  h3.textContent = name;
-  h3.classList.add("productName");
-  return h3;
-}
+const dataToCards = async function (data) {
+  for (let index = 0; index < data.length; index++) {
+    const kanapProduct = data[index];
 
-function insertParagraph(description) {
-  const paragraph = document.createElement("paragraph");
-  paragraph.textContent = description;
-  paragraph.classList.add("productDescription");
-  return paragraph;
-}
+    // carte link_______________________________________________________________
+    let kanapCart = document.createElement("a");
+    items.append(kanapCart);
+    kanapCart.setAttribute("href", "./product.html?id=" + kanapProduct._id);
+
+
+    // article__________________________________________________________________
+    let kanapArticle = document.createElement("article");
+    kanapCart.append(kanapArticle);
+
+
+    // image____________________________________________________________________
+    let kanapImage = document.createElement("img");
+    kanapArticle.append(kanapImage);
+    kanapImage.setAttribute("src", kanapProduct.imageUrl);
+    kanapImage.setAttribute("alt", kanapProduct.altTxt);
+
+
+    // titre_____________________________________________________________________
+    let kanapName = document.createElement("h3");
+    kanapArticle.append(kanapName);
+    kanapName.classList.add("productName");
+    kanapName.textContent = kanapProduct.name;
+
+
+    // description________________________________________________________________
+    let kanapDescription = document.createElement("p");
+    kanapArticle.append(kanapDescription);
+    kanapDescription.classList.add("productDescription");
+    kanapDescription.textContent = kanapProduct.description;
+  }
+};
+
+kanapItems();
