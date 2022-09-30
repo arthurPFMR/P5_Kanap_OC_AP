@@ -82,10 +82,7 @@ if (button != null) {
       );
       if (getProductStorage) {
         getProductStorage.quantity += Number(quantity);
-        localStorage.setItem(
-          "kanap",
-          JSON.stringify(productToLocalStorage)
-        );
+        localStorage.setItem("kanap", JSON.stringify(productToLocalStorage));
         return;
       }
       productToLocalStorage.push(productOptions);
