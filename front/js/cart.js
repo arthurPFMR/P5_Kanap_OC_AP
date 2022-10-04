@@ -137,7 +137,7 @@ const cartElement = (data) => {
     tolalPriceAndQuantity();
   });
 
-  // afifichage de toutes les datas________________________________________________
+  // affichage de toutes les datas du produit______________________________________
   url = "http://localhost:3000/api/products/" + infoProduct.id;
   fetch(url).then((response) =>
     response
@@ -171,7 +171,7 @@ const tolalPriceAndQuantity = () => {
       parseInt(arrayCart[i].price) * parseInt(arrayCart[i].quantity);
     // récupération des items du panier________________________________________________
     quantityOfItemInCart += parseInt(arrayCart[i].quantity);
-    // on envoie ces résultats à la div "cart_price" pour afficher le total____________
+    // envoi ces résultats à la div "cart_price" pour afficher le total____________
     document.querySelector("#totalQuantity").textContent = quantityOfItemInCart;
     document.querySelector("#totalPrice").textContent = finalPrice;
   }
@@ -180,6 +180,127 @@ const tolalPriceAndQuantity = () => {
 
 getDataFromLocalStorage();
 
-
-
 // SAISIE FORMULAIRE_____________________________________________________________
+// regex nom/prénom/ville______________________________________
+const regexName = /[^\p{L}\s-]/giu;
+
+// regex adresse_______________________________________________
+const regexAdress = /[^0-9\p{L},\s-]/giu;
+
+// regex mail__________________________________________________
+const regexMail =
+  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+// input prénom________________________________________________
+let firstName = document.querySelector("#firstName");
+
+firstName.addEventListener("input", (eventInput) => {
+  // si regex pas respecté______________________________
+  if (regexName.test(eventInput.target.value)) {
+    document.querySelector("#firstNameErrorMsg").textContent =
+      "Le champs est invalide";
+    // alors désactivation du bouton "commander"________
+    document.querySelector("#order").setAttribute("disabled", true);
+  } else {
+    document.querySelector("#firstNameErrorMsg").textContent = null;
+    document.querySelector("#order").removeAttribute("disabled");
+  }
+});
+
+// input nom___________________________________________________
+let lastName = document.querySelector("#lastName");
+
+lastName.addEventListener("input", (eventInput) => {
+  // si regex pas respecté___________________________
+  if (regexName.test(eventInput.target.value)) {
+    document.querySelector("#lastNameErrorMsg").textContent =
+      "Le champs est invalide";
+    // alors désactivation du bouton "commander"_____
+    document.querySelector("#order").setAttribute("disabled", true);
+  } else {
+    document.querySelector("#lastNameErrorMsg").textContent = null;
+    document.querySelector("#order").removeAttribute("disabled");
+  }
+});
+
+// input adresse___________________________________________________
+let adress = document.querySelector("#address");
+
+adress.addEventListener("input", (eventInput) => {
+  // si regex pas respecté___________________________
+  if (regexName.test(eventInput.target.value)) {
+    document.querySelector("#address").textContent = "Le champs est invalide";
+    // alors désactivation du bouton "commander"_____
+    document.querySelector("#order").setAttribute("disabled", true);
+  } else {
+    document.querySelector("#addressErrorMsg").textContent = null;
+    document.querySelector("#order").removeAttribute("disabled");
+  }
+});
+
+// input city___________________________________________________
+let city = document.querySelector("#city");
+
+city.addEventListener("input", (eventInput) => {
+  // si regex pas respecté___________________________
+  if (regexName.test(eventInput.target.value)) {
+    document.querySelector("#city").textContent = "Le champs est invalide";
+    // alors désactivation du bouton "commander"_____
+    document.querySelector("#order").setAttribute("disabled", true);
+  } else {
+    document.querySelector("#cityErrorMsg").textContent = null;
+    document.querySelector("#order").removeAttribute("disabled");
+  }
+});
+
+// input mail___________________________________________________
+let mail = document.querySelector("#email");
+
+mail.addEventListener("input", (eventInput) => {
+  // si regex pas respecté___________________________
+  if (regexName.test(eventInput.target.value)) {
+    document.querySelector("#email").textContent = "Le champs est invalide";
+    // alors désactivation du bouton "commander"_____
+    document.querySelector("#order").setAttribute("disabled", true);
+  } else {
+    document.querySelector("#emailErrorMsg").textContent = null;
+    document.querySelector("#order").removeAttribute("disabled");
+  }
+});
+
+//OBJET CONTACT _______________________________________________________
+function objectContact(firstName, lastName, address, city, email) {
+  this.firstName = firstName;
+  this.lastName = lastName;
+  this.address = address;
+  this.city = city;
+  this.email = email;
+}
+
+// let contactInfo = {
+//   firstName: firstName,
+//   lastName: lastName,
+//   address: address,
+//   city: city,
+//   email: email,
+// };
+
+// BOUTON COMMANDER_____________________________________________________
+let orderButton = document.querySelector("#order");
+orderButton.addEventListener("click", (eventOrder) => {
+  // création objet contact + produit_____________________________
+  let customerContact = objectContact(
+    firstName.value,
+    lastName.value,
+    address.value,
+    city.value,
+    email.value
+  );
+  let basket = []
+  for (let i = 0; i < arrayCart.length; i++) {
+    basket.push(arrayCart[i]._id)
+  }
+  let order = JSON.stringify({customerContact, basket})
+  console.log("ici", order)
+});
+
