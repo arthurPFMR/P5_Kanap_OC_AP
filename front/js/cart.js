@@ -185,14 +185,13 @@ getDataFromLocalStorage();
 
 // SAISIE FORMULAIRE_____________________________________________________________
 // regex nom/prénom/ville______________________________________
-const regexName = /[^\p{L}\s-]/;
+const regexName = /[^\p{L}\s-]/gmu;
 
 // regex adresse_______________________________________________
-const regexAdress = /[^0-9\p{L},\s-]/;
+const regexAddress = /[0-9^\p{L}\s-]/gmu;
 
 // regex mail__________________________________________________
-const regexMail =
-  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const regexMail = /^\w+([\.-]?\w+)*@([\.-]?\w+)*(\.\w{2,3})+$/;
 
 // input prénom_________________________________________________________
 let firstName = document.querySelector("#firstName");
@@ -227,11 +226,11 @@ lastName.addEventListener("input", (eventInput) => {
 });
 
 // input adresse________________________________________________________
-let adress = document.querySelector("#address");
+let address = document.querySelector("#address");
 
-adress.addEventListener("input", (eventInput) => {
+address.addEventListener("input", (eventInput) => {
   // si regex pas respecté___________________________
-  if (regexAdress.test(eventInput.target.value)) {
+  if (regexAddress.test(eventInput.target.value)) {
     document.querySelector("#address").textContent = "Le champs est invalide";
     // alors désactivation du bouton "commander"_____
     document.querySelector("#order").setAttribute("disabled", true);
@@ -272,7 +271,7 @@ mail.addEventListener("input", (eventInput) => {
 });
 
 //OBJET CONTACT ___________________________________________________________________
-function objectForm(firstName, lastName, address, city, emai) {
+function objectForm(firstName, lastName, address, city, email) {
   this.firstName = firstName;
   this.lastName = lastName;
   this.address = address;
@@ -289,7 +288,7 @@ orderButton.addEventListener("click", (eventOrder) => {
     lastName.value,
     address.value,
     city.value,
-    email.value
+    mail.value,
   );
 
   let products = [];
