@@ -82,7 +82,7 @@ const cartElement = (data) => {
 
   // évènement d'écoute sur l'input quantité_______________________________
   inputQuantity.addEventListener("input", (eventSelect) => {
-    //Au changement, retrouver l'index du produit dans l'array_____________
+    //Au clic, retrouver l'index du produit dans l'array___________________
     let indexOfProducts = Array.prototype.indexOf.call(
       document.querySelectorAll(".cart__item"),
       eventSelect.target.closest(".cart__item")
@@ -114,27 +114,29 @@ const cartElement = (data) => {
   remove.classList.add("cart__item__content__settings__delete");
 
   // supprimer_____________________________________________________________
-  let removeItem = document.createElement("p");
-  remove.append(removeItem);
-  removeItem.classList.add("deleteItem");
+  let removeProduct = document.createElement("p");
+  remove.append(removeProduct);
+  removeProduct.classList.add("deleteItem");
 
   // boutton supprimer_____________________________________________________
-  removeItem.addEventListener("click", (eventDelete) => {
-    // retrouve l'index du produit dans arraycart________________________
-    let indexOfItems = Array.prototype.indexOf.call(
-      document.querySelector(".cart__item"),
-      eventDelete.target.closest(".cart__item")
-    );
-    // suppression dans arraycart________________________________________
-    if (indexOfItems > -1) {
-      arrayCart.splice(indexOfItems, 1);
+  removeProduct.addEventListener("click", (eventRemove) => {
+    if (confirm("Retirer cet article du panier?")) {
+      // retrouve l'index du produit dans arraycart________________________
+      let indexOfItems = Array.prototype.indexOf.call(
+        document.querySelector(".cart__item"),
+        eventRemove.target.closest(".cart__item")
+      );
+      // suppression dans arraycart________________________________________
+      if (indexOfItems > -1) {
+        arrayCart.splice(indexOfItems, 1);
+      }
+      // Màj du LS
+      localStorage.setItem("kanap", JSON.stringify(arrayCart));
+      // supprime l'article
+      removeProduct.closest("article").remove();
+      // affichage total update
+      tolalPriceAndQuantity();
     }
-    // Màj du LS
-    localStorage.setItem("kanap", JSON.stringify(arrayCart));
-    // supprime l'article
-    removeItem.closest("article").remove();
-    // affichage total update
-    tolalPriceAndQuantity();
   });
 
   // affichage de toutes les datas du produit______________________________________
@@ -150,7 +152,7 @@ const cartElement = (data) => {
         priceProduct.textContent = product.price + " €";
         quantity.textContent = "Qté : ";
         // inputQuantity.value = data.quantity;
-        removeItem.textContent = "Supprimer";
+        removeProduct.textContent = "Supprimer";
       })
       .catch((err) => console.error(err))
   );
@@ -163,17 +165,18 @@ const cartElement = (data) => {
                                 puis on additione les résultats*/
 const tolalPriceAndQuantity = () => {
   let finalPrice = null;
-  let quantityOfItemInCart = null;
+  let quantityOfProductInCart = null;
 
   for (let i = 0; i < arrayCart.length; i++) {
     // parseInt renvoie un entier exprimé dans une base données________________________
     finalPrice +=
       parseInt(arrayCart[i].price) * parseInt(arrayCart[i].quantity);
     // récupération des items du panier________________________________________________
-    quantityOfItemInCart += parseInt(arrayCart[i].quantity);
+    quantityOfProductInCart += parseInt(arrayCart[i].quantity);
     // envoi ces résultats à la div "cart_price" pour afficher le total____________
-    document.querySelector("#totalQuantity").textContent = quantityOfItemInCart;
-    document.querySelector("#totalPrice").textContent = finalPrice;
+    document.querySelector("#totalQuantity").textContent =
+      quantityOfProductInCart;
+    document.querySelector("#totalPrice").textContent = parseInt(finalPrice);
   }
   console.log(finalPrice);
 };
@@ -182,16 +185,16 @@ getDataFromLocalStorage();
 
 // SAISIE FORMULAIRE_____________________________________________________________
 // regex nom/prénom/ville______________________________________
-const regexName = /[^\p{L}\s-]/giu;
+const regexName = /[^\p{L}\s-]/;
 
 // regex adresse_______________________________________________
-const regexAdress = /[^0-9\p{L},\s-]/giu;
+const regexAdress = /[^0-9\p{L},\s-]/;
 
 // regex mail__________________________________________________
 const regexMail =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-// input prénom________________________________________________
+// input prénom_________________________________________________________
 let firstName = document.querySelector("#firstName");
 
 firstName.addEventListener("input", (eventInput) => {
@@ -207,7 +210,7 @@ firstName.addEventListener("input", (eventInput) => {
   }
 });
 
-// input nom___________________________________________________
+// input nom____________________________________________________________
 let lastName = document.querySelector("#lastName");
 
 lastName.addEventListener("input", (eventInput) => {
@@ -223,12 +226,12 @@ lastName.addEventListener("input", (eventInput) => {
   }
 });
 
-// input adresse___________________________________________________
+// input adresse________________________________________________________
 let adress = document.querySelector("#address");
 
 adress.addEventListener("input", (eventInput) => {
   // si regex pas respecté___________________________
-  if (regexName.test(eventInput.target.value)) {
+  if (regexAdress.test(eventInput.target.value)) {
     document.querySelector("#address").textContent = "Le champs est invalide";
     // alors désactivation du bouton "commander"_____
     document.querySelector("#order").setAttribute("disabled", true);
@@ -238,7 +241,7 @@ adress.addEventListener("input", (eventInput) => {
   }
 });
 
-// input city___________________________________________________
+// input city___________________________________________________________
 let city = document.querySelector("#city");
 
 city.addEventListener("input", (eventInput) => {
@@ -253,12 +256,12 @@ city.addEventListener("input", (eventInput) => {
   }
 });
 
-// input mail___________________________________________________
+// input mail___________________________________________________________
 let mail = document.querySelector("#email");
 
 mail.addEventListener("input", (eventInput) => {
   // si regex pas respecté___________________________
-  if (regexName.test(eventInput.target.value)) {
+  if (regexMail.test(eventInput.target.value)) {
     document.querySelector("#email").textContent = "Le champs est invalide";
     // alors désactivation du bouton "commander"_____
     document.querySelector("#order").setAttribute("disabled", true);
@@ -268,8 +271,8 @@ mail.addEventListener("input", (eventInput) => {
   }
 });
 
-//OBJET CONTACT _______________________________________________________
-function objectContact(firstName, lastName, address, city, email) {
+//OBJET CONTACT ___________________________________________________________________
+function objectForm(firstName, lastName, address, city, emai) {
   this.firstName = firstName;
   this.lastName = lastName;
   this.address = address;
@@ -277,30 +280,41 @@ function objectContact(firstName, lastName, address, city, email) {
   this.email = email;
 }
 
-// let contactInfo = {
-//   firstName: firstName,
-//   lastName: lastName,
-//   address: address,
-//   city: city,
-//   email: email,
-// };
-
 // BOUTON COMMANDER_____________________________________________________
 let orderButton = document.querySelector("#order");
 orderButton.addEventListener("click", (eventOrder) => {
   // création objet contact + produit_____________________________
-  let customerContact = objectContact(
+  let contact = objectForm(
     firstName.value,
     lastName.value,
     address.value,
     city.value,
     email.value
   );
-  let basket = []
-  for (let i = 0; i < arrayCart.length; i++) {
-    basket.push(arrayCart[i]._id)
-  }
-  let order = JSON.stringify({customerContact, basket})
-  console.log("ici", order)
-});
 
+  let products = [];
+  for (let i = 0; i < arrayCart.length; i++) {
+    products.push(arrayCart[i]._id);
+  }
+
+  let orderRequest = JSON.stringify({ contact, products });
+  // document.location.href = "confirmation.html"
+  //requête post pour récupérer l' orderId par l'API______________
+  fetch("http://localhost:3000/api/products/order", {
+    method: "POST",
+    body: orderRequest,
+  })
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      //  si ok, redirection vers page confirmation_______________
+    })
+    .then((data) => {
+      localStorage.setItem("orderId", data.orderId);
+      // on efface le LS__________________________________________
+      localStorage.clear();
+
+      window.location.href = "confirmation.html";
+    });
+});
