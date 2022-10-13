@@ -60,6 +60,8 @@ if (button != null) {
     if (color == null || color == "" || quantity == null || quantity == 0) {
       alert("Veuillez sélectionner la couleur et la quantité.");
       return;
+    } else {
+      confirm("Produit ajouté au panier.")
     }
     let productOptions = {
       id: productId,
