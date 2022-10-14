@@ -316,12 +316,12 @@ orderButton.addEventListener("click", (eventSubmit) => {
     })
     .then((data) => {
       //on efface le LS__________________________________________
-      localStorage.clear();
+      // localStorage.clear();
 
       localStorage.setItem("orderId", data.orderId);
-
-      document.location.href = "confirmation.html";
+      // localStorage.clear();
     });
+    document.location.href = "confirmation.html";
 });
 
 // let orderButton = document.querySelector("#order");
