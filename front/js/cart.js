@@ -3,7 +3,7 @@ let arrayCart = [];
 
 // récup du panier en array via LS_________________________________________
 const getDataFromLocalStorage = () => {
-  //vérifie et récupère les données du panier______________________________
+  //cart.html: vérifie et récupère les données du panier___________________
   if (localStorage.getItem("kanap")) {
     arrayCart = JSON.parse(localStorage.getItem("kanap"));
   }
@@ -278,11 +278,11 @@ mail.addEventListener("input", (e) => {
 //BOUTON COMMANDER-------------------------------------------------------------
 const orderButton = document.getElementById("order");
 
-orderButton.addEventListener("submit", (eventSubmit) => {
+orderButton.addEventListener("click", (eventSubmit) => {
   eventSubmit.preventDefault();
 
   // objet contact
-  const contact = {
+  let contact = {
     firstName: firstName.value,
     lastName: lastName.value,
     address: address.value,
@@ -296,13 +296,17 @@ orderButton.addEventListener("submit", (eventSubmit) => {
   for (let i = 0; i < arrayCart.length; i++) {
     products.push(arrayCart[i]._id);
   }
-console.log(products);
-  let orderRequest = JSON.stringify({ contact, products });
 
-  //requête post pour récupérer l' orderId par l'API______________
+  let orderRequest = JSON.stringify(contact, products);
+
+  //HTTP requête post pour récupérer l' orderId par l'API______________
   fetch("http://localhost:3000/api/products/order", {
     method: "POST",
     body: orderRequest,
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
   })
     .then((res) => {
       if (res.ok) {
@@ -311,13 +315,13 @@ console.log(products);
       //si ok, redirection vers page confirmation_______________
     })
     .then((data) => {
-      localStorage.setItem("orderId", data.orderId);
       //on efface le LS__________________________________________
       localStorage.clear();
 
-      window.location.href = "confirmation.html";
+      localStorage.setItem("orderId", data.orderId);
+
+      document.location.href = "confirmation.html";
     });
-  console.log(orderRequest);
 });
 
 // let orderButton = document.querySelector("#order");

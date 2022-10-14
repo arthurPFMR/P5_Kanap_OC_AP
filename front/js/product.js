@@ -18,7 +18,7 @@ function useData(itemKanap) {
 }
 
 function insertColors(colors) {
-  const select = document.querySelector("#colors");
+  const select = document.getElementById("colors");
   {
     colors.forEach((tint) => {
       const option = document.createElement("option");
@@ -30,12 +30,12 @@ function insertColors(colors) {
 }
 
 function insertTitle(name) {
-  const h1 = document.querySelector("#title");
+  const h1 = document.getElementById("title");
   h1.textContent = name;
 }
 
 function insertPrice(price) {
-  const kanapPrice = document.querySelector("#price");
+  const kanapPrice = document.getElementById("price");
   kanapPrice.textContent = price;
 }
 
@@ -48,26 +48,28 @@ function insertImage(imageUrl, altTxt) {
 }
 
 function insertDescription(description) {
-  const kanapDescription = document.querySelector("#description");
+  const kanapDescription = document.getElementById("description");
   kanapDescription.textContent = description;
 }
+
 // écoute du boutton ajouter
-const button = document.querySelector("#addToCart");
+const button = document.getElementById("addToCart");
 if (button != null) {
   button.addEventListener("click", () => {
-    const color = document.querySelector("#colors").value;
-    const quantity = document.querySelector("#quantity").value;
+    const color = document.getElementById("colors").value;
+    const quantity = document.getElementById("quantity").value;
     if (color == null || color == "" || quantity == null || quantity == 0) {
       alert("Veuillez sélectionner la couleur et la quantité.");
       return;
     } else {
-      confirm("Produit ajouté au panier.")
+      confirm("Produit ajouté au panier.");
     }
     let productOptions = {
       id: productId,
       colors: color,
       quantity: Number(quantity),
     };
+
     //___________localStorage__________________________
     function addToLocalStorage() {
       productToLocalStorage.push(productOptions);
@@ -88,12 +90,12 @@ if (button != null) {
         return;
       }
       productToLocalStorage.push(productOptions);
+
       //si pas de produit créer array
     } else {
       productToLocalStorage = [];
       productToLocalStorage.push(productOptions);
     }
     localStorage.setItem("kanap", JSON.stringify(productToLocalStorage));
-    // window.location.href = "cart.html";
   });
 }
