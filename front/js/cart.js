@@ -1,5 +1,9 @@
+// fetch("http://localhost:3000/api/products/")
+//   .then((response) => response.json())
+//   .then((data) => getDataFromLocalStorage(data));
 let infoProduct = null;
 let arrayCart = [];
+
 
 // récup du panier en array via LS_________________________________________
 const getDataFromLocalStorage = () => {
@@ -240,7 +244,7 @@ address.addEventListener("input", (eventInput) => {
     document.getElementById("order").setAttribute("disabled", true);
   } else {
     document.getElementById("addressErrorMsg").textContent = null;
-    document.getElementById("order").removeAttribute("disabled");
+    document.getElementById("order").set;
   }
 });
 
@@ -269,94 +273,113 @@ mail.addEventListener("input", (e) => {
       "Adresse mail invalide";
     // alors désactivation du bouton "commander"_____
     document.getElementById("order").setAttribute("disabled", true);
+    // } else if (mail.value.length > 0 && mail.value.length < 3) {
+    //   document.getElementById("order").setAttribute("disabled", true)
   } else {
     document.getElementById("emailErrorMsg").textContent = null;
     document.getElementById("order").removeAttribute("disabled");
   }
 });
 
-//BOUTON COMMANDER-------------------------------------------------------------
-const orderButton = document.getElementById("order");
-
-orderButton.addEventListener("click", (eventSubmit) => {
-  eventSubmit.preventDefault();
-
-  // objet contact
-  let contact = {
-    firstName: firstName.value,
-    lastName: lastName.value,
-    address: address.value,
-    city: city.value,
-    mail: mail.value,
-  };
-
-  // tableau produits ds le panier
-  let products = [];
-
-  for (let i = 0; i < arrayCart.length; i++) {
-    products.push(arrayCart[i]._id);
-  }
-
-  let orderRequest = JSON.stringify(contact, products);
-
-  //HTTP requête post pour récupérer l' orderId par l'API______________
-  fetch("http://localhost:3000/api/products/order", {
-    method: "POST",
-    body: orderRequest,
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      //si ok, redirection vers page confirmation_______________
-    })
-    .then((data) => {
-      //on efface le LS__________________________________________
-      // localStorage.clear();
-
-      localStorage.setItem("orderId", data.orderId);
-      // localStorage.clear();
-    });
-    document.location.href = "confirmation.html";
-});
-
-// let orderButton = document.querySelector("#order");
-// orderButton.addEventListener("submit", (eventOrder) => {
-//   eventOrder.preventDefault();
-//   // création objet contact + produit_____________________________
-//   let contact = new objectForm(
-//     firstName.value,
-//     lastName.value,
-//     address.value,
-//     city.value,
-//     mail.value
+// function inputsForm() {
+//   const form = document.querySelector(".cart__order__form")
+//   const inputs = document.querySelectorAll(
+//     'input[type="text"], input[type="email"]'
 //   );
-//   let products = [];
-//   for (let i = 0; i < arrayCart.length; i++) {
-//     products.push(arrayCart[i]._id);
+//   inputs.forEach((input) => {
+//     if (input.value === "") {
+//       alert("Remplissez le formulaire")
+//       return
+//     }
+//   })
 //   }
 
-//   //   let orderRequest = JSON.stringify({ contact, products });
-//   //   //requête post pour récupérer l' orderId par l'API______________
-//   //   fetch("http://localhost:3000/api/products/order", {
-//   //     method: "POST",
-//   //     body: orderRequest,
-//   //   })
-//   //     .then((res) => {
-//   //       if (res.ok) {
-//   //         return res.json();
-//   //       }
-//   //       //  si ok, redirection vers page confirmation_______________
-//   //     })
-//   //     .then((data) => {
-//   //       localStorage.setItem("orderId", data.orderId);
-//   //       // on efface le LS__________________________________________
-//   //       localStorage.clear();
 
-//   //       document.location.href = "confirmation.html";
-//   //     });
+
+// // console.log(inputs);
+//BOUTON COMMANDER-------------------------------------------------------------
+// objet contact
+let contact = {
+  firstName: firstName.value,
+  lastName: lastName.value,
+  address: address.value,
+  city: city.value,
+  mail: mail.value,
+};
+// tableau produits ds le panier
+let products = [];
+
+for (let i = 0; i < arrayCart.length; i++) {
+  products.push(arrayCart[i].id);
+}
+
+let orderInfo = {contact, products};
+
+const orderRequest = {
+  method: "POST",
+  headers: {
+    "Content-Type": "application.json",
+  },
+  body: JSON.stringify(orderInfo),
+};
+
+document.getElementById("order").addEventListener("click", (e) => {
+  e.preventDefault();
+  fetch("http://localhost:3000/api/products/order" + orderRequest)
+    .then((res) => res.json())
+    .then((data) => {
+      localStorage.getItem("orderId", data.orderId)
+    });
+    // window.location.href = "confirmation.html", orderId;
+});
+
+// console.log(orderId);
+
+// orderButton.addEventListener("click", (eventSubmit) => {
+//   eventSubmit.preventDefault();
+//   // if (inputs.value.length > 0 && inputs.value.length < 1) {
+//   //   document.getElementById("order").setAttribute("disabled", true)
+//   // } else {
+//   //   document.getElementById("order").removeAttribute("disabled");
+//   // }
+
+//   // objet contact
+//   let contact = {
+//     firstName: firstName.value,
+//     lastName: lastName.value,
+//     address: address.value,
+//     city: city.value,
+//     mail: mail.value,
+//   };
+//   // tableau produits ds le panier
+//   let products = [];
+
+//   for (let i = 0; i < arrayCart.length; i++) {
+//     products.push(arrayCart[i].id);
+//   }
+//   let orderRequest = [{contact, products}];
+
+//   //HTTP requête post pour récupérer l' orderId par l'API______________
+//   fetch("http://localhost:3000/api/products/order", {
+//     method: "POST",
+//     body: JSON.stringify(orderRequest),
+//     headers: {
+//       Accept: "application/json",
+//       "Content-Type": "application/json",
+//     },
+//   })
+//     .then((res) => {
+//       if (res.ok) {
+//         return res.json();
+//       }
+//       //si ok, redirection vers page confirmation_______________
+//     })
+//     .then((data) => {
+//       //on efface le LS__________________________________________
+//       // localStorage.clear();
+//       localStorage.setItem("orderId", data.orderId);
+//       // localStorage.clear();
+//     });
+
+//     // document.location.href = "confirmation.html";
 // });
