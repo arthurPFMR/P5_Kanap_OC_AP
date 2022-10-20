@@ -4,7 +4,6 @@
 let infoProduct = null;
 let arrayCart = [];
 
-
 // récup du panier en array via LS_________________________________________
 const getDataFromLocalStorage = () => {
   //cart.html: vérifie et récupère les données du panier___________________
@@ -294,10 +293,8 @@ mail.addEventListener("input", (e) => {
 //   })
 //   }
 
-
-
-// // console.log(inputs);
-//BOUTON COMMANDER-------------------------------------------------------------
+// console.log(inputs);
+// BOUTON COMMANDER-------------------------------------------------------------
 // objet contact
 let contact = {
   firstName: firstName.value,
@@ -313,8 +310,9 @@ for (let i = 0; i < arrayCart.length; i++) {
   products.push(arrayCart[i].id);
 }
 
-let orderInfo = {contact, products};
+let orderInfo = { contact, products };
 
+// http request method POST
 const orderRequest = {
   method: "POST",
   headers: {
@@ -325,61 +323,10 @@ const orderRequest = {
 
 document.getElementById("order").addEventListener("click", (e) => {
   e.preventDefault();
-  fetch("http://localhost:3000/api/products/order" + orderRequest)
-    .then((res) => res.json())
+  fetch("http://localhost:3000/api/products/order")
+    .then((res) => res.json(res))
     .then((data) => {
-      localStorage.getItem("orderId", data.orderId)
+      localStorage.setItem("orderId", data.orderId);
     });
-    // window.location.href = "confirmation.html", orderId;
+  // window.location.href = "confirmation.html", orderId;
 });
-
-// console.log(orderId);
-
-// orderButton.addEventListener("click", (eventSubmit) => {
-//   eventSubmit.preventDefault();
-//   // if (inputs.value.length > 0 && inputs.value.length < 1) {
-//   //   document.getElementById("order").setAttribute("disabled", true)
-//   // } else {
-//   //   document.getElementById("order").removeAttribute("disabled");
-//   // }
-
-//   // objet contact
-//   let contact = {
-//     firstName: firstName.value,
-//     lastName: lastName.value,
-//     address: address.value,
-//     city: city.value,
-//     mail: mail.value,
-//   };
-//   // tableau produits ds le panier
-//   let products = [];
-
-//   for (let i = 0; i < arrayCart.length; i++) {
-//     products.push(arrayCart[i].id);
-//   }
-//   let orderRequest = [{contact, products}];
-
-//   //HTTP requête post pour récupérer l' orderId par l'API______________
-//   fetch("http://localhost:3000/api/products/order", {
-//     method: "POST",
-//     body: JSON.stringify(orderRequest),
-//     headers: {
-//       Accept: "application/json",
-//       "Content-Type": "application/json",
-//     },
-//   })
-//     .then((res) => {
-//       if (res.ok) {
-//         return res.json();
-//       }
-//       //si ok, redirection vers page confirmation_______________
-//     })
-//     .then((data) => {
-//       //on efface le LS__________________________________________
-//       // localStorage.clear();
-//       localStorage.setItem("orderId", data.orderId);
-//       // localStorage.clear();
-//     });
-
-//     // document.location.href = "confirmation.html";
-// });
