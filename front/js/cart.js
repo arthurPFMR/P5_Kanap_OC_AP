@@ -1,14 +1,14 @@
-// fetch("http://localhost:3000/api/products/")
-//   .then((response) => response.json())
-//   .then((data) => getDataFromLocalStorage(data));
 let infoProduct = null;
 let arrayCart = [];
 
 // récup du panier en array via LS_________________________________________
 const getDataFromLocalStorage = () => {
-  //cart.html: vérifie et récupère les données du panier___________________
+  //vérifie et récupère les données du panier______________________________
   if (localStorage.getItem("kanap")) {
     arrayCart = JSON.parse(localStorage.getItem("kanap"));
+  } else {
+    alert("Votre panier est vide");
+    document.getElementById("order").setAttribute("disabled", true);
   }
 
   for (let i = 0; i < arrayCart.length; i++) {
@@ -17,7 +17,7 @@ const getDataFromLocalStorage = () => {
   }
 };
 
-//fonction   génération de l'article_____________________________________________________
+//fonction   génération de l'article-------------------------------------------------------------
 const cartElement = (data) => {
   infoProduct = data;
 
@@ -154,7 +154,6 @@ const cartElement = (data) => {
         colorProduct.textContent = data.colors;
         priceProduct.textContent = product.price + " €";
         quantity.textContent = "Qté : ";
-        // inputQuantity.value = data.quantity;
         removeProduct.textContent = "Supprimer";
       })
       .catch((err) => console.error(err))
@@ -162,18 +161,18 @@ const cartElement = (data) => {
   tolalPriceAndQuantity();
 };
 
-// TOTAL-----------------------------------------------------------------------------
+// TOTAL-----------------------------------------------------------------------------------------
 const tolalPriceAndQuantity = () => {
   let finalPrice = null;
   let quantityOfProductInCart = null;
 
   //récupération des data price______________________________________________________
-  let allInfoProductAsynchronously = arrayCart.map((data) =>
+  let allInfoProductAsync = arrayCart.map((data) =>
     fetch("http://localhost:3000/api/products/" + data.id).then((response) =>
       response.json()
     )
   );
-  Promise.all(allInfoProductAsynchronously).then((products) => {
+  Promise.all(allInfoProductAsync).then((products) => {
     products.forEach((product, i) => {
       // parseInt renvoie un entier exprimé dans une base données____________________
       finalPrice += parseInt(product.price) * parseInt(arrayCart[i].quantity);
@@ -188,28 +187,30 @@ const tolalPriceAndQuantity = () => {
 };
 getDataFromLocalStorage();
 
-// SAISIE FORMULAIRE------------------------------------------------------------------
-// regex nom/prénom/ville(unicode et -)________________________
+//
+// REGEX pour le formulaire----------------------------------------------------------------------
+// (unicode et -)_________________________________
 const regexName = /[^\p{L}\s-]/gmu;
-
-// regex adresse (unicode et ,)________________________________
+// (unicode et -,)________________________________
 const regexAddress = /[^0-9\p{L},\s-]/gmu;
-
-// regex mail__________________________________________________
+// mail___________________________________________
 const regexMail =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
+//
+// SAISIE FORMULAIRE-----------------------------------------------------------------------------
 // input prénom_________________________________________________________
 let firstName = document.querySelector('input[name="firstName"]');
 
 firstName.addEventListener("input", (eventInput) => {
-  // si regex pas respecté______________________________
+  // si regex pas respecté => error msg______________
   if (regexName.test(eventInput.target.value)) {
     document.getElementById("firstNameErrorMsg").textContent =
       "Le champs est invalide";
-    // alors désactivation du bouton "commander"________
+    //désactivation du bouton "commander"____________
     document.getElementById("order").setAttribute("disabled", true);
   } else {
+    // sinon on active le bouton "commander" et supprime le msg error
     document.getElementById("firstNameErrorMsg").textContent = null;
     document.getElementById("order").removeAttribute("disabled");
   }
@@ -219,11 +220,9 @@ firstName.addEventListener("input", (eventInput) => {
 let lastName = document.querySelector('input[name="lastName"]');
 
 lastName.addEventListener("input", (eventInput) => {
-  // si regex pas respecté___________________________
   if (regexName.test(eventInput.target.value)) {
     document.getElementById("lastNameErrorMsg").textContent =
       "Le champs est invalide";
-    // alors désactivation du bouton "commander"_____
     document.getElementById("order").setAttribute("disabled", true);
   } else {
     document.getElementById("lastNameErrorMsg").textContent = null;
@@ -235,11 +234,9 @@ lastName.addEventListener("input", (eventInput) => {
 let address = document.querySelector('input[name="address"]');
 
 address.addEventListener("input", (eventInput) => {
-  // si regex pas respecté___________________________
   if (regexAddress.test(eventInput.target.value)) {
     document.getElementById("addressErrorMsg").textContent =
       "Le champs est invalide";
-    // alors désactivation du bouton "commander"_____
     document.getElementById("order").setAttribute("disabled", true);
   } else {
     document.getElementById("addressErrorMsg").textContent = null;
@@ -250,9 +247,8 @@ address.addEventListener("input", (eventInput) => {
 // input city___________________________________________________________
 let city = document.querySelector('input[name="city"]');
 
-city.addEventListener("input", (e) => {
-  // si regex pas respecté___________________________
-  if (regexName.test(e.target.value)) {
+city.addEventListener("input", (eventInput) => {
+  if (regexName.test(eventInput.target.value)) {
     document.getElementById("cityErrorMsg").textContent =
       "Le champs est invalide";
     // alors désactivation du bouton "commander"_____
@@ -266,67 +262,93 @@ city.addEventListener("input", (e) => {
 // input mail___________________________________________________________
 let mail = document.querySelector('input[name="email"]');
 
-mail.addEventListener("input", (e) => {
-  if (!regexMail.test(e.target.value)) {
+mail.addEventListener("input", (eventInput) => {
+  if (!regexMail.test(eventInput.target.value)) {
     document.getElementById("emailErrorMsg").textContent =
       "Adresse mail invalide";
-    // alors désactivation du bouton "commander"_____
     document.getElementById("order").setAttribute("disabled", true);
-    // } else if (mail.value.length > 0 && mail.value.length < 3) {
-    //   document.getElementById("order").setAttribute("disabled", true)
   } else {
     document.getElementById("emailErrorMsg").textContent = null;
     document.getElementById("order").removeAttribute("disabled");
   }
 });
 
-// function inputsForm() {
-//   const form = document.querySelector(".cart__order__form")
-//   const inputs = document.querySelectorAll(
-//     'input[type="text"], input[type="email"]'
-//   );
-//   inputs.forEach((input) => {
-//     if (input.value === "") {
-//       alert("Remplissez le formulaire")
-//       return
-//     }
-//   })
-//   }
+//
+// BOUTON COMMANDER-------------------------------------------------------------------------------
+const orderButton = document.getElementById("order");
 
-// console.log(inputs);
-// BOUTON COMMANDER-------------------------------------------------------------
-// objet contact
-let contact = {
-  firstName: firstName.value,
-  lastName: lastName.value,
-  address: address.value,
-  city: city.value,
-  mail: mail.value,
-};
-// tableau produits ds le panier
-let products = [];
+orderButton.addEventListener("click", (event) => {
+  event.preventDefault();
 
-for (let i = 0; i < arrayCart.length; i++) {
-  products.push(arrayCart[i].id);
-}
+  //Récupération des inputs du formulaire_______________________________
+  let inputFirstName = document.getElementById("firstName");
+  if (inputFirstName.value == "") {
+    alert("Veuillez remplir tout les champs du formulaire");
+    document.getElementById("order").setAttribute("disabled", true);
+    return;
+  }
+  let inputLastName = document.getElementById("lastName");
+  if (inputLastName.value == "") {
+    alert("Veuillez remplir tout les champs du formulaire");
+    document.getElementById("order").setAttribute("disabled", true);
+    return;
+  }
+  let inputAdress = document.getElementById("address");
+  if (inputAdress.value == "") {
+    alert("Veuillez remplir tout les champs du formulaire");
+    document.getElementById("order").setAttribute("disabled", true);
+    return;
+  }
+  let inputCity = document.getElementById("city");
+  if (inputCity.value == "") {
+    alert("Veuillez remplir tout les champs du formulaire");
+    document.getElementById("order").setAttribute("disabled", true);
+    return;
+  }
+  let inputMail = document.getElementById("email");
+  if (inputMail.value == "") {
+    alert("Veuillez remplir tout les champs du formulaire");
+    document.getElementById("order").setAttribute("disabled", true);
+    return;
+  }
 
-let orderInfo = { contact, products };
+  // array product_______________________________________________________
+  let product = [];
 
-// http request method POST
-const orderRequest = {
-  method: "POST",
-  headers: {
-    "Content-Type": "application.json",
-  },
-  body: JSON.stringify(orderInfo),
-};
+  for (let i = 0; i < arrayCart.length; i++) {
+    product.push(arrayCart[i].id);
+  }
 
-document.getElementById("order").addEventListener("click", (e) => {
-  e.preventDefault();
-  fetch("http://localhost:3000/api/products/order")
-    .then((res) => res.json(res))
+  // creation du body (contact{} + produit[])____________________________
+  const order = {
+    contact: {
+      firstName: inputFirstName.value,
+      lastName: inputLastName.value,
+      address: inputAdress.value,
+      city: inputCity.value,
+      email: inputMail.value,
+    },
+    products: product,
+  };
+
+  // Method POST_________________________________________________________
+  const request = {
+    method: "POST",
+    body: JSON.stringify(order),
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  };
+
+  // Requete fetch_______________________________________________________
+  fetch("http://localhost:3000/api/products/order", request)
+    .then((response) => response.json())
     .then((data) => {
       localStorage.setItem("orderId", data.orderId);
+      document.location.href = "confirmation.html";
+    })
+    .catch((err) => {
+      alert("Nous rencontrons des problèmes... code: " + err.message);
     });
-  // window.location.href = "confirmation.html", orderId;
 });
