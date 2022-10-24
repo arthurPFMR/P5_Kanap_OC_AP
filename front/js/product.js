@@ -1,23 +1,57 @@
-//récupération des paramètres d’URL___________________________________________
+//récupération des paramètres d’URL------------------------------------------
 const idProductUrl = window.location.search;
 const urlParams = new URLSearchParams(idProductUrl);
 const productId = urlParams.get("id");
 
-// _____appel API_____________________________________________________________
+// _____appel API-----------------------------------------------------------
 fetch("http://localhost:3000/api/products/" + productId)
   .then((response) => response.json())
   .then((data) => useData(data));
+// -----------------------------------------------------------------------
 
+// fonction datas de item Kanap_______________________
 function useData(itemKanap) {
   const { colors, name, price, imageUrl, description, altTxt } = itemKanap;
-  insertColors(colors);
-  insertTitle(name);
-  insertPrice(price);
-  insertImage(imageUrl, altTxt);
-  insertDescription(description);
+  colorMaker(colors);
+  titleMaker(name);
+  priceMaker(price);
+  imageMaker(imageUrl, altTxt);
+  descriptionMaker(description);
 }
 
-function insertColors(colors) {
+// SECTION ITEM-----------------------------------------------------
+//
+
+// div item_img______________________________
+function imageMaker(imageUrl, altTxt) {
+  const image = document.createElement("img");
+  image.src = imageUrl;
+  image.alt = altTxt;
+  const bounce = document.querySelector(".item__img");
+  bounce.append(image);
+}
+
+// H1_________________________________________
+function titleMaker(name) {
+  const h1 = document.getElementById("title");
+  h1.textContent = name;
+}
+
+// span price_________________________________
+function priceMaker(price) {
+  const kanapPrice = document.getElementById("price");
+  kanapPrice.textContent = price;
+}
+
+
+// div item_content_description_____________
+function descriptionMaker(description) {
+  const kanapDescription = document.getElementById("description");
+  kanapDescription.textContent = description;
+}
+
+// select colors______________________________
+function colorMaker(colors) {
   const select = document.getElementById("colors");
   {
     colors.forEach((tint) => {
@@ -29,33 +63,12 @@ function insertColors(colors) {
   }
 }
 
-function insertTitle(name) {
-  const h1 = document.getElementById("title");
-  h1.textContent = name;
-}
-
-function insertPrice(price) {
-  const kanapPrice = document.getElementById("price");
-  kanapPrice.textContent = price;
-}
-
-function insertImage(imageUrl, altTxt) {
-  const image = document.createElement("img");
-  image.src = imageUrl;
-  image.alt = altTxt;
-  const bounce = document.querySelector(".item__img");
-  bounce.append(image);
-}
-
-function insertDescription(description) {
-  const kanapDescription = document.getElementById("description");
-  kanapDescription.textContent = description;
-}
-
-// écoute du boutton ajouter
+// écoute du boutton "ajouter"-------------------------------------------------
+// 
 const button = document.getElementById("addToCart");
 if (button != null) {
   button.addEventListener("click", () => {
+    // pris en compte de la couleur et de la quantité__________
     const color = document.getElementById("colors").value;
     const quantity = document.getElementById("quantity").value;
     if (color == null || color == "" || quantity == null || quantity == 0) {
@@ -64,22 +77,24 @@ if (button != null) {
     } else {
       confirm("Produit ajouté au panier.");
     }
+
+    // définition des "keys options"________________________
     let productOptions = {
       id: productId,
       colors: color,
       quantity: Number(quantity),
     };
 
-    //___________localStorage__________________________
+    //localStorage-------------------------------------------------------------
     function addToLocalStorage() {
       productToLocalStorage.push(productOptions);
       localStorage.setItem("kanap", JSON.stringify(productToLocalStorage));
     }
 
-    //declaration key & value
+    //declaration key & value______________________
     let productToLocalStorage = JSON.parse(localStorage.getItem("kanap"));
 
-    //si produit ds localstorage
+    //si produit ds localstorage___________________
     if (productToLocalStorage) {
       const getProductStorage = productToLocalStorage.find(
         (p) => p.id == productOptions.id && p.colors == color
@@ -91,7 +106,7 @@ if (button != null) {
       }
       productToLocalStorage.push(productOptions);
 
-      //si pas de produit créer array
+      //si pas de produit créer array______________
     } else {
       productToLocalStorage = [];
       productToLocalStorage.push(productOptions);

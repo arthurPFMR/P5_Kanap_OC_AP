@@ -189,6 +189,7 @@ getDataFromLocalStorage();
 
 //
 // REGEX pour le formulaire----------------------------------------------------------------------
+function regex() {
 // (unicode et -)_________________________________
 const regexName = /[^\p{L}\s-]/gmu;
 // (unicode et -,)________________________________
@@ -196,6 +197,7 @@ const regexAddress = /[^0-9\p{L},\s-]/gmu;
 // mail___________________________________________
 const regexMail =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+}
 
 //
 // SAISIE FORMULAIRE-----------------------------------------------------------------------------
@@ -314,11 +316,13 @@ orderButton.addEventListener("click", (event) => {
 
   // array product_______________________________________________________
   let product = [];
-
+  if (product == null) {
+    document.getElementById("order").setAttribute("disabled", true);
+  } else {
   for (let i = 0; i < arrayCart.length; i++) {
     product.push(arrayCart[i].id);
   }
-
+}
   // creation du body (contact{} + produit[])____________________________
   const order = {
     contact: {
@@ -349,6 +353,6 @@ orderButton.addEventListener("click", (event) => {
       document.location.href = "confirmation.html";
     })
     .catch((err) => {
-      alert("Nous rencontrons des problèmes... code: " + err.message);
+      alert("Nous rencontrons des problèmes, code: " + err.message);
     });
 });
