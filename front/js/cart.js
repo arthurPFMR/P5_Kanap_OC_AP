@@ -8,7 +8,6 @@ const getDataFromLocalStorage = () => {
     arrayCart = JSON.parse(localStorage.getItem("kanap"));
   } else {
     alert("Votre panier est vide");
-    document.getElementById("order").setAttribute("disabled", true);
   }
 
   for (let i = 0; i < arrayCart.length; i++) {
@@ -84,7 +83,7 @@ const cartElement = (data) => {
   inputQuantity.setAttribute("value", data.quantity);
 
   // évènement d'écoute sur l'input quantité_______________________________
-  inputQuantity.addEventListener("input", (eventSelect) => {
+  inputQuantity.addEventListener("change", (eventSelect) => {
     //Au clic, retrouver l'index du produit dans l'array___________________
     let indexOfProducts = Array.prototype.indexOf.call(
       document.querySelectorAll(".cart__item"),
@@ -135,6 +134,10 @@ const cartElement = (data) => {
       }
       // Màj du LS
       localStorage.setItem("kanap", JSON.stringify(arrayCart));
+      if (arrayCart.length == 0) {
+        localStorage.removeItem("kanap");
+        document.location.href = "./cart.html";
+      }
       // supprime l'article du Html
       removeProduct.closest("article").remove();
       // affichage total update
@@ -189,7 +192,7 @@ getDataFromLocalStorage();
 
 //
 // REGEX pour le formulaire----------------------------------------------------------------------
-function regex() {
+
 // (unicode et -)_________________________________
 const regexName = /[^\p{L}\s-]/gmu;
 // (unicode et -,)________________________________
@@ -197,7 +200,6 @@ const regexAddress = /[^0-9\p{L},\s-]/gmu;
 // mail___________________________________________
 const regexMail =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-}
 
 //
 // SAISIE FORMULAIRE-----------------------------------------------------------------------------
@@ -275,13 +277,23 @@ mail.addEventListener("input", (eventInput) => {
   }
 });
 
-//
 // BOUTON COMMANDER-------------------------------------------------------------------------------
 const orderButton = document.getElementById("order");
+const orderForm = document.querySelector(".cart__order");
+const orderH1 = document.querySelector("h1");
+const displayQantityAndPrice = document.querySelector(".cart__price");
 
+// si panier vide_______________________________________________________
+if (arrayCart.length == 0) {
+  orderButton.style.display = "none";
+  orderForm.style.display = "none";
+  orderH1.textContent = "Votre panier est vide";
+  displayQantityAndPrice.style.display = "none";
+}
+
+// évènement d'écoute sur le bouton "commander"_________________________
 orderButton.addEventListener("click", (event) => {
   event.preventDefault();
-
   //Récupération des inputs du formulaire_______________________________
   let inputFirstName = document.getElementById("firstName");
   if (inputFirstName.value == "") {
@@ -289,24 +301,28 @@ orderButton.addEventListener("click", (event) => {
     document.getElementById("order").setAttribute("disabled", true);
     return;
   }
+
   let inputLastName = document.getElementById("lastName");
   if (inputLastName.value == "") {
     alert("Veuillez remplir tout les champs du formulaire");
     document.getElementById("order").setAttribute("disabled", true);
     return;
   }
+
   let inputAdress = document.getElementById("address");
   if (inputAdress.value == "") {
     alert("Veuillez remplir tout les champs du formulaire");
     document.getElementById("order").setAttribute("disabled", true);
     return;
   }
+
   let inputCity = document.getElementById("city");
   if (inputCity.value == "") {
     alert("Veuillez remplir tout les champs du formulaire");
     document.getElementById("order").setAttribute("disabled", true);
     return;
   }
+
   let inputMail = document.getElementById("email");
   if (inputMail.value == "") {
     alert("Veuillez remplir tout les champs du formulaire");
@@ -316,13 +332,10 @@ orderButton.addEventListener("click", (event) => {
 
   // array product_______________________________________________________
   let product = [];
-  if (product == null) {
-    document.getElementById("order").setAttribute("disabled", true);
-  } else {
   for (let i = 0; i < arrayCart.length; i++) {
     product.push(arrayCart[i].id);
   }
-}
+
   // creation du body (contact{} + produit[])____________________________
   const order = {
     contact: {
