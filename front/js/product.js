@@ -1,15 +1,24 @@
-//récupération des paramètres d’URL------------------------------------------
-const idProductUrl = window.location.search;
-const urlParams = new URLSearchParams(idProductUrl);
-const productId = urlParams.get("id");
+//RECUPERATION DES PARAMETRES DE L'URL--------------------------------------
 
-// _____appel API-----------------------------------------------------------
+// récupère les paramètres query search (?=.....):
+const querySearch = window.location.search;
+// formatage des données de l'API => queryString:
+const params = new URLSearchParams(querySearch);
+// envoie à productId la queryString formater et prend "id":
+const productId = params.get("id");
+// -------------------------------------------------------------------------
+//
+
+// APPEL API----------------------------------------------------------------
 fetch("http://localhost:3000/api/products/" + productId)
   .then((response) => response.json())
   .then((data) => useData(data));
-// -----------------------------------------------------------------------
+// --------------------------------------------------------------------------
 
-// fonction datas de item Kanap_______________________
+// SECTION ITEM-----------------------------------------------------
+//
+// fonction datas de itemKanap_______________________
+// permet de visualiser les détail produit dans le DOM
 function useData(itemKanap) {
   const { colors, name, price, imageUrl, description, altTxt } = itemKanap;
   colorMaker(colors);
@@ -18,9 +27,6 @@ function useData(itemKanap) {
   imageMaker(imageUrl, altTxt);
   descriptionMaker(description);
 }
-
-// SECTION ITEM-----------------------------------------------------
-//
 
 // div item_img______________________________
 function imageMaker(imageUrl, altTxt) {
@@ -43,7 +49,6 @@ function priceMaker(price) {
   kanapPrice.textContent = price;
 }
 
-
 // div item_content_description_____________
 function descriptionMaker(description) {
   const kanapDescription = document.getElementById("description");
@@ -52,19 +57,32 @@ function descriptionMaker(description) {
 
 // select colors______________________________
 function colorMaker(colors) {
-  const select = document.getElementById("colors");
+  const selectColor = document.getElementById("colors");
   {
     colors.forEach((tint) => {
       const option = document.createElement("option");
       option.value = tint;
       option.textContent = tint;
-      select.append(option);
+      selectColor.append(option);
     });
   }
 }
 
+// select quantity_______________________________
+const itemQuantity = document.getElementById("quantity");
+const regexQuantity = /[.,]+/;
+itemQuantity.addEventListener("change", (e) => {
+  if (
+    itemQuantity.value < 0 ||
+    itemQuantity.value > 100 ||
+    regexQuantity.test(e.target.value)
+  ) {
+    itemQuantity.value = 0;
+  }
+});
+
 // écoute du boutton "ajouter"-------------------------------------------------
-// 
+//
 const button = document.getElementById("addToCart");
 if (button != null) {
   button.addEventListener("click", () => {
@@ -78,28 +96,33 @@ if (button != null) {
       confirm("Produit ajouté au panier.");
     }
 
-    // définition des "keys options"________________________
+    // définition des "keysJSON options"________________________
     let productOptions = {
       id: productId,
       colors: color,
       quantity: Number(quantity),
     };
 
-    //localStorage-------------------------------------------------------------
+    //LOCALSTORAGE-------------------------------------------------------------
     function addToLocalStorage() {
       productToLocalStorage.push(productOptions);
+      //envoie dans LS la key "kanap"
+      //avec la valeur JS convertit en chaîne JSON:
       localStorage.setItem("kanap", JSON.stringify(productToLocalStorage));
     }
 
     //declaration key & value______________________
+    // analyse la chaîne JSON et construit la valeur JS:
     let productToLocalStorage = JSON.parse(localStorage.getItem("kanap"));
 
-    //si produit ds localstorage___________________
+    //si produit ds localstorage:
     if (productToLocalStorage) {
+      // retrouve l'ID et la couleur:
       const getProductStorage = productToLocalStorage.find(
-        (p) => p.id == productOptions.id && p.colors == color
+        (i) => i.id == productOptions.id && i.colors == color
       );
       if (getProductStorage) {
+        // renvoie la quantité:
         getProductStorage.quantity += Number(quantity);
         localStorage.setItem("kanap", JSON.stringify(productToLocalStorage));
         return;

@@ -1,15 +1,19 @@
-let infoProduct = null;
+
+// déclaration de data en object:
+let data = null;
+
+// décaration de arrayCart en array:
 let arrayCart = [];
 
 // récup du panier en array via LS_________________________________________
 const getDataFromLocalStorage = () => {
-  //vérifie et récupère les données du panier______________________________
+  //vérifie et récupère les données du panier:
   if (localStorage.getItem("kanap")) {
     arrayCart = JSON.parse(localStorage.getItem("kanap"));
   } else {
     alert("Votre panier est vide");
   }
-
+  // liste chaque arrayCart présent dans le LS:
   for (let i = 0; i < arrayCart.length; i++) {
     const productInCart = arrayCart[i];
     cartElement(productInCart);
@@ -17,14 +21,13 @@ const getDataFromLocalStorage = () => {
 };
 
 //fonction   génération de l'article-------------------------------------------------------------
-const cartElement = (data) => {
-  infoProduct = data;
+const cartElement = (dataKanap) => {
 
   // article_______________________________________________________________________
   let cartProduct = document.createElement("article");
   document.querySelector("#cart__items").append(cartProduct);
-  cartProduct.dataset.id = infoProduct.id;
-  cartProduct.dataset.color = infoProduct.colors;
+  cartProduct.dataset.id = dataKanap.id;
+  cartProduct.dataset.color = dataKanap.colors;
   cartProduct.classList.add("cart__item");
 
   // div image ___________________________________________________________
@@ -80,32 +83,35 @@ const cartElement = (data) => {
   inputQuantity.name = "itemQuantity";
   inputQuantity.min = 1;
   inputQuantity.max = 100;
-  inputQuantity.setAttribute("value", data.quantity);
+  inputQuantity.setAttribute("value", dataKanap.quantity);
 
   // évènement d'écoute sur l'input quantité_______________________________
   inputQuantity.addEventListener("change", (eventSelect) => {
-    //Au clic, retrouver l'index du produit dans l'array___________________
+    if (inputQuantity.value <= 0) {
+      inputQuantity.value = 1;
+    }
+    //Au clic, renvoie le premier index du produit dans l'array:
     let indexOfProducts = Array.prototype.indexOf.call(
       document.querySelectorAll(".cart__item"),
       eventSelect.target.closest(".cart__item")
     );
 
     //Si nouvelle valeur différente,
-    // modification dans l'array Panier et dans local Storage______________
+    // modification dans l'array Panier et dans local Storage:
     if (
       inputQuantity.value !== arrayCart[indexOfProducts].quantity &&
       1 <= inputQuantity.value <= 100
     ) {
       let updateQuantity = parseInt(inputQuantity.value);
 
-      //Màj quantité dans l' Array Panier___________________________________
+      //Màj quantité dans l' Array Panier:
       arrayCart[indexOfProducts].quantity = updateQuantity;
 
-      //MàJ du localStorage_________________________________________________
+      //MàJ du localStorage:
       localStorage.setItem("kanap", JSON.stringify(arrayCart));
 
       //Modification de l'affichage du total,
-      // si modification de l'input quantité sur la page panier_____________
+      // si modification de l'input quantité sur la page panier:
       tolalPriceAndQuantity();
     }
   });
@@ -123,30 +129,30 @@ const cartElement = (data) => {
   // boutton supprimer_____________________________________________________
   removeProduct.addEventListener("click", (eventDelete) => {
     if (confirm("Retirer cet article du panier ?")) {
-      // retrouve l'index du produit dans arraycart________________________
+      // retrouve l'index du produit dans arraycart:
       let indexOfProduct = Array.prototype.indexOf.call(
         document.querySelectorAll(".cart__item"),
         eventDelete.target.closest(".cart__item")
       );
-      // suppression dans arraycart________________________________________
+      // suppression dans arraycart:
       if (indexOfProduct > -1) {
         arrayCart.splice(0, 1);
       }
-      // Màj du LS
+      // Màj du LS:
       localStorage.setItem("kanap", JSON.stringify(arrayCart));
       if (arrayCart.length == 0) {
         localStorage.removeItem("kanap");
         document.location.href = "./cart.html";
       }
-      // supprime l'article du Html
+      // supprime l'article du Html:
       removeProduct.closest("article").remove();
-      // affichage total update
+      // Màj des totaux:
       tolalPriceAndQuantity();
     }
   });
 
   // affichage de toutes les datas du produit______________________________________
-  url = "http://localhost:3000/api/products/" + infoProduct.id;
+  url = "http://localhost:3000/api/products/" + dataKanap.id;
   fetch(url).then((response) =>
     response
       .json()
@@ -154,13 +160,15 @@ const cartElement = (data) => {
         imageProduct.src = product.imageUrl;
         imageProduct.alt = product.altTxt;
         nameProduct.textContent = product.name;
-        colorProduct.textContent = data.colors;
+        colorProduct.textContent = dataKanap.colors;
         priceProduct.textContent = product.price + " €";
         quantity.textContent = "Qté : ";
         removeProduct.textContent = "Supprimer";
       })
+      // si response ou product sont mal executés:
       .catch((err) => console.error(err))
   );
+  // Màj des totaux:
   tolalPriceAndQuantity();
 };
 
@@ -170,14 +178,17 @@ const tolalPriceAndQuantity = () => {
   let quantityOfProductInCart = null;
 
   //récupération des data price______________________________________________________
+  // création d'un nouvel array allInfoProductAsync:
   let allInfoProductAsync = arrayCart.map((data) =>
     fetch("http://localhost:3000/api/products/" + data.id).then((response) =>
       response.json()
     )
   );
+
+  // 
   Promise.all(allInfoProductAsync).then((products) => {
     products.forEach((product, i) => {
-      // parseInt renvoie un entier exprimé dans une base données____________________
+      // parseInt renvoie un entier exprimé de la base de données____________________
       finalPrice += parseInt(product.price) * parseInt(arrayCart[i].quantity);
       // récupération des items du panier____________________________________________
       quantityOfProductInCart += parseInt(arrayCart[i].quantity);
