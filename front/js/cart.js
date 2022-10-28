@@ -1,4 +1,3 @@
-
 // déclaration de data en object:
 let data = null;
 
@@ -22,7 +21,6 @@ const getDataFromLocalStorage = () => {
 
 //fonction   génération de l'article-------------------------------------------------------------
 const cartElement = (dataKanap) => {
-
   // article_______________________________________________________________________
   let cartProduct = document.createElement("article");
   document.querySelector("#cart__items").append(cartProduct);
@@ -175,30 +173,30 @@ const cartElement = (dataKanap) => {
 // TOTAL-----------------------------------------------------------------------------------------
 const tolalPriceAndQuantity = () => {
   let finalPrice = null;
-  let quantityOfProductInCart = null;
+  let quantityInCart = null;
 
   //récupération des data price______________________________________________________
   // création d'un nouvel array allInfoProductAsync:
-  let allInfoProductAsync = arrayCart.map((data) =>
+  let allDataProduct = arrayCart.map((data) =>
     fetch("http://localhost:3000/api/products/" + data.id).then((response) =>
       response.json()
     )
   );
 
-  // 
-  Promise.all(allInfoProductAsync).then((products) => {
+  // Méthode Promise.all, products = résolution de allDataProduct:
+  Promise.all(allDataProduct).then((products) => {
     products.forEach((product, i) => {
-      // parseInt renvoie un entier exprimé de la base de données____________________
+      // multiplication du prix par quantité:
       finalPrice += parseInt(product.price) * parseInt(arrayCart[i].quantity);
-      // récupération des items du panier____________________________________________
-      quantityOfProductInCart += parseInt(arrayCart[i].quantity);
-      // envoi ces résultats à la div "cart_price" pour afficher le total____________
-      document.querySelector("#totalQuantity").textContent =
-        quantityOfProductInCart;
+      // récupération des items du panier:
+      quantityInCart += parseInt(arrayCart[i].quantity);
+      // envoie résultats à la div "cart_price" pour afficher le total:
+      document.querySelector("#totalQuantity").textContent = quantityInCart;
       document.querySelector("#totalPrice").textContent = parseInt(finalPrice);
     });
   });
 };
+
 getDataFromLocalStorage();
 
 //
@@ -288,13 +286,13 @@ mail.addEventListener("input", (eventInput) => {
   }
 });
 
-// BOUTON COMMANDER-------------------------------------------------------------------------------
+// variables pour la gestion de la commande:
 const orderButton = document.getElementById("order");
 const orderForm = document.querySelector(".cart__order");
 const orderH1 = document.querySelector("h1");
 const displayQantityAndPrice = document.querySelector(".cart__price");
 
-// si panier vide_______________________________________________________
+// condition si panier vide:
 if (arrayCart.length == 0) {
   orderButton.style.display = "none";
   orderForm.style.display = "none";
@@ -302,42 +300,40 @@ if (arrayCart.length == 0) {
   displayQantityAndPrice.style.display = "none";
 }
 
-// évènement d'écoute sur le bouton "commander"_________________________
+// BOUTON COMMANDER-------------------------------------------------------------------------------
+// évènement d'écoute sur le bouton "commander":
 orderButton.addEventListener("click", (event) => {
   event.preventDefault();
-  //Récupération des inputs du formulaire_______________________________
+
+  //Récupération des inputs du formulaire____________________________
   let inputFirstName = document.getElementById("firstName");
+  // si le champ est vide -> alert() et on arrete le script:
   if (inputFirstName.value == "") {
-    alert("Veuillez remplir tout les champs du formulaire");
-    document.getElementById("order").setAttribute("disabled", true);
+    alert("Veuillez indiquer votre prénom");
     return;
   }
 
   let inputLastName = document.getElementById("lastName");
   if (inputLastName.value == "") {
-    alert("Veuillez remplir tout les champs du formulaire");
-    document.getElementById("order").setAttribute("disabled", true);
+    alert("Veuillez indiquer votre nom");
     return;
   }
 
   let inputAdress = document.getElementById("address");
   if (inputAdress.value == "") {
-    alert("Veuillez remplir tout les champs du formulaire");
-    document.getElementById("order").setAttribute("disabled", true);
+    alert("Veuillez indiquer votre adresse");
     return;
   }
 
   let inputCity = document.getElementById("city");
   if (inputCity.value == "") {
-    alert("Veuillez remplir tout les champs du formulaire");
-    document.getElementById("order").setAttribute("disabled", true);
+    alert("Veuillez indiquer votre ville");
     return;
   }
 
   let inputMail = document.getElementById("email");
   if (inputMail.value == "") {
-    alert("Veuillez remplir tout les champs du formulaire");
-    document.getElementById("order").setAttribute("disabled", true);
+    alert("Veuillez indiquer votre adresse mail");
     return;
   }
 
