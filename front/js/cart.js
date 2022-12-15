@@ -19,7 +19,7 @@ const getDataFromLocalStorage = () => {
   }
 };
 
-//fonction   génération de l'article-------------------------------------------------------------
+//fonction de génération de l'article-------------------------------------------------------------
 const cartElement = (dataKanap) => {
   // article_______________________________________________________________________
   let cartProduct = document.createElement("article");
@@ -83,22 +83,24 @@ const cartElement = (dataKanap) => {
   inputQuantity.max = 100;
   inputQuantity.setAttribute("value", dataKanap.quantity);
 
+  const regexQuantity = /[.,]+/;
   // évènement d'écoute sur l'input quantité_______________________________
   inputQuantity.addEventListener("change", (eventSelect) => {
-    if (inputQuantity.value <= 0) {
-      inputQuantity.value = 1;
-    }
     //Au clic, renvoie le premier index du produit dans l'array:
     let indexOfProducts = Array.prototype.indexOf.call(
       document.querySelectorAll(".cart__item"),
       eventSelect.target.closest(".cart__item")
     );
 
+    if (inputQuantity.value <= 0 || inputQuantity.value > 100 || regexQuantity.test(eventSelect.target.value)) {
+      inputQuantity.value = 1;
+    }
+
     //Si nouvelle valeur différente,
     // modification dans l'array Panier et dans local Storage:
     if (
       inputQuantity.value !== arrayCart[indexOfProducts].quantity &&
-      1 <= inputQuantity.value <= 100
+      1 <= inputQuantity.value <= 100 
     ) {
       let updateQuantity = parseInt(inputQuantity.value);
 
@@ -134,6 +136,7 @@ const cartElement = (dataKanap) => {
       );
       // suppression dans arraycart:
       if (indexOfProduct > -1) {
+        // index 0 et quantité à supprimer:
         arrayCart.splice(0, 1);
       }
       // Màj du LS:
@@ -296,11 +299,11 @@ const displayQantityAndPrice = document.querySelector(".cart__price");
 if (arrayCart.length == 0) {
   orderButton.style.display = "none";
   orderForm.style.display = "none";
-  orderH1.textContent = "Votre panier est vide";
+  orderH1.textContent = "Votre panier est vide !";
   displayQantityAndPrice.style.display = "none";
 }
 
-// BOUTON COMMANDER-------------------------------------------------------------------------------
+// BOUTON COMMANDER-----------------------------------------------------------------------------------------------------------------
 // évènement d'écoute sur le bouton "commander":
 orderButton.addEventListener("click", (event) => {
   event.preventDefault();
@@ -356,6 +359,8 @@ orderButton.addEventListener("click", (event) => {
   };
 
   // Method POST_________________________________________________________
+  // demander au serveur une réponse avec les données
+  // contenues dans le body de la requête HTTP
   const request = {
     method: "POST",
     body: JSON.stringify(order),

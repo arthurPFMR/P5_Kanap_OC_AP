@@ -23,7 +23,7 @@ function dataToCards(data) {
   for (let i = 0; i < data.length; i++) {
     const dataDisplay = data[i];
 
-    // carte link_______________________________________________
+    // carte link(items id de la section)_______________________
     let kanapCart = document.createElement("a");
     items.append(kanapCart);
     kanapCart.setAttribute("href", "./product.html?id=" + dataDisplay._id);
@@ -50,6 +50,7 @@ function dataToCards(data) {
     kanapDescription.classList.add("productDescription");
     kanapDescription.textContent = dataDisplay.description;
   }
-};
+}
+
 // joue la fonction async:
 kanapItems();

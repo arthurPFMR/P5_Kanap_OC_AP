@@ -4,7 +4,7 @@
 const querySearch = window.location.search;
 // formatage des données de l'API => queryString:
 const params = new URLSearchParams(querySearch);
-// envoie à productId la queryString formater et prend "id":
+// envoie à productId la queryString formater nommage "id":
 const productId = params.get("id");
 // -------------------------------------------------------------------------
 //
@@ -15,7 +15,7 @@ fetch("http://localhost:3000/api/products/" + productId)
   .then((data) => useData(data));
 // --------------------------------------------------------------------------
 
-// SECTION ITEM-----------------------------------------------------
+// SECTION ITEM---------------------------------------------------------------------------------------------------------------
 //
 // fonction datas de itemKanap_______________________
 // permet de visualiser les détail produit dans le DOM
@@ -59,10 +59,10 @@ function descriptionMaker(description) {
 function colorMaker(colors) {
   const selectColor = document.getElementById("colors");
   {
-    colors.forEach((tint) => {
+    colors.forEach((kanapColor) => {
       const option = document.createElement("option");
-      option.value = tint;
-      option.textContent = tint;
+      option.value = kanapColor;
+      option.textContent = kanapColor;
       selectColor.append(option);
     });
   }
@@ -71,6 +71,7 @@ function colorMaker(colors) {
 // select quantity_______________________________
 const itemQuantity = document.getElementById("quantity");
 const regexQuantity = /[.,]+/;
+// évènement d'écoute de l'input quantité:
 itemQuantity.addEventListener("change", (e) => {
   if (
     itemQuantity.value < 0 ||
@@ -81,7 +82,7 @@ itemQuantity.addEventListener("change", (e) => {
   }
 });
 
-// écoute du boutton "ajouter"-------------------------------------------------
+// ECOUTE DU BOUTON "ajouter"-------------------------------------------------------------------------------------------------------
 //
 const button = document.getElementById("addToCart");
 if (button != null) {
@@ -103,14 +104,7 @@ if (button != null) {
       quantity: Number(quantity),
     };
 
-    //LOCALSTORAGE-------------------------------------------------------------
-    function addToLocalStorage() {
-      productToLocalStorage.push(productOptions);
-      //envoie dans LS la key "kanap"
-      //avec la valeur JS convertit en chaîne JSON:
-      localStorage.setItem("kanap", JSON.stringify(productToLocalStorage));
-    }
-
+    //LOCALSTORAGE-----------------------------------------------------------------------------------------------------------------
     //declaration key & value______________________
     // analyse la chaîne JSON et construit la valeur JS:
     let productToLocalStorage = JSON.parse(localStorage.getItem("kanap"));
@@ -122,14 +116,15 @@ if (button != null) {
         (i) => i.id == productOptions.id && i.colors == color
       );
       if (getProductStorage) {
-        // renvoie la quantité:
+        // renvoie la quantité (+= permet d'additionné l'item):
         getProductStorage.quantity += Number(quantity);
         localStorage.setItem("kanap", JSON.stringify(productToLocalStorage));
         return;
       }
+      // ajoute les items et renvoie un nouveau tableau:
       productToLocalStorage.push(productOptions);
 
-      //si pas de produit créer array______________
+      //si pas de produit déja présent ds LS, créer array______________
     } else {
       productToLocalStorage = [];
       productToLocalStorage.push(productOptions);
